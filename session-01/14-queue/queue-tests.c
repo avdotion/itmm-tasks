@@ -1,3 +1,7 @@
+// TASK: Data structure - Queue (LIFO)
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>

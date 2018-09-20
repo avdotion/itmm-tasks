@@ -1,3 +1,7 @@
+// TASK: C-Strings
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 
 int main() {

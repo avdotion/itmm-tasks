@@ -1,6 +1,11 @@
+// TASK: Function greeting
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 #include <stdbool.h>
 
+// Primality test
 bool is_prime(long long int number) {
   unsigned long long int d = 2;
   while (number % d != 0 && d * d <= number) {

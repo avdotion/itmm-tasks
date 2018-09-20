@@ -1,12 +1,16 @@
+// TASK: Formated I/O
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 
+
 int main() {
-  // Assigment
+  // Assignment
   char symbol;
   int integer_number;
   double real_number;
   char string[100];
-  // fgets(string, 100, stdin); // For spaces supporting
 
   // Input
   printf("Enter a symbol (char): ");
@@ -20,6 +24,7 @@ int main() {
 
   printf("Enter a string (char array): ");
   scanf("%s", string);
+  // fgets(string, 100, stdin); // For spaces supporting
 
   // Output
   printf("\n");

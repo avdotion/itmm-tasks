@@ -1,3 +1,7 @@
+// TASK: Knapsack problem
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 #include <inttypes.h>
 

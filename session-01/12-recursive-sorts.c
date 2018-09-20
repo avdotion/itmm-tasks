@@ -1,8 +1,11 @@
+// TASK: Merge sort
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 #include <stdlib.h>
 
 // Dynamically growing array structure
-
 typedef struct {
   int *data;
   size_t size;

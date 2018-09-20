@@ -1,3 +1,7 @@
+// TASK: Data structure - Binary search tree
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>

@@ -1,3 +1,7 @@
+// TASK: Strings sorting
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

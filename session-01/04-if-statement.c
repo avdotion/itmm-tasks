@@ -1,3 +1,7 @@
+// TASK: IF statement, typecasting
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>

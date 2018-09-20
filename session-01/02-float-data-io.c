@@ -1,3 +1,7 @@
+// TASK: Real numbers I/O
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 
 int main() {

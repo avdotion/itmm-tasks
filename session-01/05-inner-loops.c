@@ -1,3 +1,7 @@
+// TASK: Inner loops
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>

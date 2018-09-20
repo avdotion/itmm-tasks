@@ -1,3 +1,7 @@
+// TASK: Johnson problem
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,5 +1,8 @@
+// TASK: Bitwise operations
+// STATUS: DONE
+// MARK: PENDING
+
 #include <stdio.h>
-#include <stdlib.h>
 
 int getBinary(unsigned int n) {
   if (n) {
