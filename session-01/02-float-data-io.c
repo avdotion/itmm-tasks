@@ -3,33 +3,43 @@
 // MARK: PENDING
 
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
-  double numbers[20];
-  signed int numbers_amount;
+  int numbers_count;
 
-  printf("Enter amount of the real numbers: ");
-  scanf("%u", &numbers_amount);
-  for (int i = 0; i < numbers_amount; ++i) {
-    printf("Enter numbers[%d]: ", i);
-    scanf("%lf", &numbers[i]);
+  char buffer[50];
+  char *ptr;
+
+  printf("Enter count of the real numbers: ");
+  scanf("%s", buffer);
+  numbers_count = (int)strtol(buffer, &ptr, 10);
+
+  double *numbers = malloc(sizeof(double) * numbers_count);
+
+  for (int i = 0; i < numbers_count; ++i) {
+    printf("Enter numbers[%d]: ", i + 1);
+    scanf("%s", buffer);
+    numbers[i] = strtod(buffer, &ptr);
   }
 
-  for (int i = 0; i < numbers_amount; ++i) {
-    printf("%d: %.2f\n", i, numbers[i]);
+  for (int i = 0; i < numbers_count; ++i) {
+    printf("%d: %.2f\n", i+1, numbers[i]);
   }
 
   printf("\n");
+
   for (int i = 0; i < 40; ++i) {
     printf("-");
   }
+
   printf("\n");
 
   long double numbers_sum = 0;
-  for (int i = 0; i < numbers_amount; ++i) {
+  for (int i = 0; i < numbers_count; ++i) {
     numbers_sum += numbers[i];
   }
 
-  printf("Sum of the numbers: %llf", numbers_sum);
+  printf("Sum of the numbers: %Lf", numbers_sum);
   return 0;
 }

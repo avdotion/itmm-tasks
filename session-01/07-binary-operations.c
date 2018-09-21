@@ -3,6 +3,7 @@
 // MARK: PENDING
 
 #include <stdio.h>
+#include <stdlib.h>
 
 int getBinary(unsigned int n) {
   if (n) {
@@ -21,9 +22,14 @@ unsigned char shift_bitwise_right(unsigned char num, int shift) {
 }
 
 int main() {
+  char buffer[50];
+  char *ptr;
+
   unsigned char x;
   printf("Enter valid decimal integer: ");
-  scanf("%u", &x);
+
+  scanf("%s", buffer);
+  x = (unsigned char)strtoul(buffer, &ptr, 10);
 
   char direction;
   printf("Enter shift direction (</>): ");
@@ -31,7 +37,8 @@ int main() {
 
   int shift;
   printf("Enter shift value: ");
-  scanf("%d", &shift);
+  scanf("%s", buffer);
+  shift = (int)strtol(buffer, &ptr, 10);
 
   if (direction == '<' || direction == '>') {
     printf("Given number (decimal): %u\n", x);

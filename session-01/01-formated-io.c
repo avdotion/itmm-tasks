@@ -3,7 +3,8 @@
 // MARK: PENDING
 
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <memory.h>
 
 int main() {
   // Assignment
@@ -12,19 +13,29 @@ int main() {
   double real_number;
   char string[100];
 
+  // Using strtol() and strtod() instead of using scanf() for integer
+  char buffer[100];
+  char *ptr;
+
   // Input
   printf("Enter a symbol (char): ");
   scanf("%c", &symbol);
 
   printf("Enter an integer number (int): ");
-  scanf("%d", &integer_number);
+  scanf("%s", buffer);
+  integer_number = (int)strtol(buffer, &ptr, 10);
 
   printf("Enter an real number (double): ");
-  scanf("%lf", &real_number);
+  scanf("%s", buffer);
+  real_number = strtod(buffer, &ptr);
+  getchar();
 
   printf("Enter a string (char array): ");
-  scanf("%s", string);
-  // fgets(string, 100, stdin); // For spaces supporting
+  fgets(string, 100, stdin);
+
+  if (string[strlen(string) - 1] == '\n') {
+    string[strlen(string) - 1] = '\0';
+  }
 
   // Output
   printf("\n");

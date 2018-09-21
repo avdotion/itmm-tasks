@@ -8,27 +8,29 @@
 #include <stdbool.h>
 
 int main() {
-  srand(time(NULL));
+  srand((unsigned int)time(NULL));
   bool is_user_want_to_exit = false;
-  int MAX_ATTEMPS = 5;
+  int MAX_ATTEMPTS = 5;
+
+  char buffer[50];
+  char *ptr;
+
+  // Mainloop
   do {
-    // Main loop
     int attempts = 0;
     int number = rand() % 100;
     bool game_over = false;
     bool user_won = false;
-    /*
-    printf("Enter attempts number: ");
-    scanf("%d", &attempts);
-    */
+
+    // Step loop
     do {
-      // Step loop
       int user_guess;
       printf("Try to guess the number between 0 and 99: ");
-      scanf("%d", &user_guess);
+      scanf("%s", buffer);
+      user_guess = (int)strtol(buffer, &ptr, 10);
 
       if (user_guess == number) {
-        printf("You are totally right! (attemps = %d)\n", attemps);
+        printf("You are totally right! (attemps = %d)\n", attempts);
         user_won = true;
       } else {
         if (user_guess > number) {
@@ -38,7 +40,7 @@ int main() {
         }
       }
       attempts++;
-      if (attempts < MAX_ATTEMPS) {
+      if (attempts >= MAX_ATTEMPTS) {
         printf("Game Over!\nThe number was %d\n", number);
         game_over = true;
       }
