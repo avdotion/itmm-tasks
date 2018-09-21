@@ -13,26 +13,6 @@ double items_weights[sizeof(bitmask)];
 double items_values[sizeof(bitmask)];
 bitmask best_solution = 0;
 
-void printBits(size_t const size, void const * const ptr) {
-  unsigned char *b = (unsigned char*) ptr;
-  unsigned char byte;
-
-  for (int i = size-1; i >= 0; i--) {
-    for (int j = 7; j >= 0; j--) {
-      byte = (b[i] >> j) & 1;
-      printf("%u", byte);
-    }
-  }
-  printf("\n");
-}
-
-void printArray(size_t const size, double a[]) {
-  for (int i = 0; i < size; ++i) {
-    printf("%lf, ", a[i]);
-  }
-  printf("\n");
-}
-
 int get_by_index(bitmask b, int index) {
   for (int i = 0; i < index; ++i) {
     b = b >> 1;
@@ -71,19 +51,6 @@ void solve_knapsack_problem(int step, bitmask knapsack) {
 }
 
 int main() {
-  /*
-  printf("Enter number of items (max %d): ", 2 << sizeof(bitmask));
-  scanf("%d", &items_number);
-
-  printf("Enter knapsack set of items in folowing format: weight/value\n");
-  for (int i = 0; i < items_number; ++i) {
-    printf("items[%d] = ", i);
-    scanf("%lf/%lf", &items_weights[i], &items_values[i]);
-  }
-
-  printf("Enter knapsack capacity: ");
-  scanf("%lf", &knapsack_capacity);
-  */
   items_number = 4;
   items_weights[0] = 2.0;
   items_weights[1] = 4.0;
@@ -99,7 +66,6 @@ int main() {
 
   solve_knapsack_problem(0, knapsack);
   printf("%lf\n", get_value(best_solution));
-  // printBits(sizeof(best_solution), &best_solution);
 
   return 0;
 }

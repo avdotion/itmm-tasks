@@ -23,7 +23,7 @@ int hash(char *key, int hash_length) {
   int d = 0;
   int p = 1337;
   for (int i = 0; i < strlen(key); ++i) {
-    d += key[i] * pow(p, i);
+    d += key[i] * (int)pow(p, i);
     d %= (int)pow(2, hash_length);
   }
   return d;
@@ -120,58 +120,19 @@ char *get(dict *d, char *key) {
   }
 }
 
-dict* importDict(int hash_length) {
-  dict *hash_table = (dict*)malloc(sizeof(dict));
-  hash_table->HASH_LENGTH = hash_length;
-  hash_table->data = malloc(sizeof(node *) * (int)pow(2, hash_table->HASH_LENGTH));
-
-  FILE* fin = fopen("filename.bin", "rb");
-  if (fin == NULL) {
-    printf("Error opening file for reading\n");
-  }
-  printf("V\n");
-  size_t result = fread(hash_table->data, 1, sizeof(node *) * (int)pow(2, hash_table->HASH_LENGTH), fin);
-  if (result != sizeof(hash_table->data)) {
-    printf("Error reading file\n");
-  }
-  fclose(fin);
-
-  return hash_table;
-}
-
-void exportDict(dict *d) {
-  FILE* fout = fopen("filename.bin", "wb");
-  if (fout == NULL)
-      printf("Error opening file for writing");
-  fwrite(d->data, 1, sizeof(node *) * (int)pow(2, d->HASH_LENGTH), fout);
-  fclose(fout);
-}
-
-
 int main() {
-  dict *first_dict = importDict(20);
-
-  // insert(first_dict, "foo", "bar");
-  displayDict(first_dict);
-  printf("%s\n", get(first_dict, "foo2\0"));
-
-  return 0;
-}
-
-/*
-int main() {
-
   dict *first_dict = newDict(20);
 
-  insert(first_dict, "a\0", "bar\0");
-  insert(first_dict, "b\0", "bar2\0");
-  insert(first_dict, "s\0", "bar3\0");
-  insert(first_dict, "t\0", "bar4\0");
+  insert(first_dict, "a\0", "animal\0");
+  insert(first_dict, "b\0", "ball\0");
+  insert(first_dict, "s\0", "sea lion\0");
+  insert(first_dict, "t\0", "table\0");
 
-  exportDict(first_dict);
-
-  displayDict(first_dict);
+  printf("a -> %s\n", get(first_dict, "a"));
+  printf("b -> %s\n", get(first_dict, "b"));
+  printf("s -> %s\n", get(first_dict, "s"));
+  printf("t -> %s\n", get(first_dict, "t"));
+  printf("c -> %s\n", get(first_dict, "c"));
 
   return 0;
 }
-*/

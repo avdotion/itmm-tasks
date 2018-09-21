@@ -76,7 +76,7 @@ void mergeSort(array *a) {
   if (1 < a->size && a->size < 5) {
     selectionSort(a);
   } else if (a->size >= 5) {
-    int middle = a->size / 2;
+    int middle = (int)(a->size / 2);
 
     array l;
     initArray(&l, 1);

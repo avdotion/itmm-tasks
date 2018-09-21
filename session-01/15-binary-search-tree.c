@@ -52,7 +52,7 @@ void treePrint(tree_node *p) {
 }
 int main() {
   FILE *text;
-  text = fopen("test.txt", "r");
+  text = fopen("15-test.txt", "r");
 
   tree_node *root;
   root = NULL;
@@ -61,7 +61,7 @@ int main() {
   int letters_in_current_word = 0;
 
   char symbol;
-  while ((symbol = fgetc(text)) != EOF) {
+  while ((symbol = (char)fgetc(text)) != EOF) {
     if (symbol == ' ' || symbol == '!' || symbol == '?' ||
         symbol == '.' || symbol == ',' || symbol == '\n' ||
         symbol == ';' || symbol == ':') {
@@ -73,7 +73,6 @@ int main() {
         word[letters_in_current_word] = 0;
         root = addLeaf(root, word);
         letters_in_current_word = 0;
-        // free(word);
       }
     } else if (isalpha(symbol)) {
       current_word[letters_in_current_word] = symbol;

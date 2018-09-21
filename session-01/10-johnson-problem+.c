@@ -2,6 +2,13 @@
 // STATUS: DONE
 // MARK: PENDING
 
+/*
+ * Test Example:
+ * 6
+ * 7 3 1 6 3 3
+ * 1 5 2 4 2 2
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,18 +49,6 @@ int popStack(stack *a) {
   return 0;
 }
 
-void printStack(stack *a) {
-  if (a->size) {
-    printf("stack(");
-    for (int i = 0; i < a->size - 1; ++i) {
-      printf("%d, ", a->data[i]);
-    }
-    printf("%d)\n", a->data[a->size-1]);
-  } else {
-    printf("stack()\n");
-  }
-}
-
 void printArray(int a[], int size) {
   if (size) {
     printf("array(");
@@ -87,10 +82,6 @@ pair minMatrix(int **array) {
   return minimum;
 }
 
-void printPair(pair p) {
-  printf("(%d, %d)\n", p.i, p.j);
-}
-
 int max(int a, int b) {
   if (a > b) {
     return a;
@@ -98,23 +89,19 @@ int max(int a, int b) {
   return b;
 }
 
-void copyArray(int (*dest)[ROWS][COLS], int (*values)[ROWS][COLS]) {
-  for (int i = 0; i < ROWS; ++i) {
-    for (int j = 0; j < COLS; ++j) {
-      *dest[i][j] = *values[i][j];
-    }
-  }
-}
-
 int main() {
-  FILE *fopen(), *fin;
+  FILE *fin;
   fin = fopen("10-johnson-problem-test.txt", "r");
   if (!fin) {
     printf("Error reading file!\n");
     return EXIT_FAILURE;
   }
 
-  fscanf(fin, "%d\n", &ROWS);
+  char buffer[50];
+  char *ptr;
+
+  fscanf(fin, "%s", buffer);
+  ROWS = (int)strtol(buffer, &ptr, 10);
   printf("%d\n", ROWS);
 
   int element;
@@ -126,13 +113,13 @@ int main() {
   int index = 0;
 
   for (int i = 0; i < ROWS; ++i) {
-    fscanf(fin, "%d", &element);
-    matrix[i][0] = element;
+    fscanf(fin, "%s", buffer);
+    matrix[i][0] = (int)strtol(buffer, &ptr, 10);
   }
 
   for (int i = 0; i < ROWS; ++i) {
-    fscanf(fin, "%d", &element);
-    matrix[i][1] = element;
+    fscanf(fin, "%s", buffer);
+    matrix[i][1] = (int)strtol(buffer, &ptr, 10);
   }
 
   // Copy data from given array to "copied"
@@ -219,5 +206,5 @@ int main() {
 
   printf("Machine 1: %s\n", first_machine_graph);
   printf("Machine 2: %s\n", second_machine_graph);
-  printf("Time spent: %d\n", max(strlen(first_machine_graph), strlen(second_machine_graph)));
+  printf("Time spent: %d\n", max((int)strlen(first_machine_graph), (int)strlen(second_machine_graph)));
 }

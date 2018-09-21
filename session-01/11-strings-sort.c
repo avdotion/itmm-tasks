@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int stringcmp(const void *a, const void *b) {
+int cmp_p_strings(const void *a, const void *b) {
   const char **ia = (const char **)a;
   const char **ib = (const char **)b;
   return strcmp(*ia, *ib);
@@ -30,21 +30,12 @@ int main() {
       input[strings_counter-1] = strdup(name);
     }
 
-  } while (strcmp(name, "\n"));
+  } while (strcmp(name, "\n") != 0);
 
-  qsort(input, strings_counter-1, sizeof(char *), stringcmp);
+  qsort(input, (int)(strings_counter - 1), sizeof(char *), cmp_p_strings);
 
   printf("Sorted strings:\n");
 
   for (int i = 0; i < strings_counter-1; i++)
     printf("%s", input[i]);
-/*
-  for (int i = 0; i < num; i++) {
-    free(input[i]);
-  }
-
-  free(input);
-
-
-*/
 }

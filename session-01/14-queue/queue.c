@@ -44,10 +44,7 @@ char* popQueue(queue *queue) {
   if (isEmptyQueue(queue)) {
     queue->tail = NULL;
   }
-  if (node != NULL) {
-    char *value = node->value;
-    free(node);
-    return value;
-  }
-  exit(EXIT_FAILURE);
+  char *value = node->value;
+  free(node);
+  return value;
 }
