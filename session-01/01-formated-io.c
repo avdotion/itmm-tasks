@@ -46,7 +46,7 @@ int main() {
   printf("[%d] - like an decimal integer (symbol-code)\n", symbol);
   printf("[%o] - like an octal integer\n", symbol);
   printf("[%x] - like an hexadecimal integer\n", symbol);
-  printf("[%p] - like a pointer address\n", symbol);
+  printf("[%p] - like a pointer address\n", (void *)&symbol);
   printf("\n");
   printf("Type \"int\" can act...\n");
   printf("[%d] - like a decimal integer\n", integer_number);
@@ -55,7 +55,7 @@ int main() {
   printf("[%o] - like an octal integer\n", integer_number);
   printf("[%x] - like an hexadecimal integer\n", integer_number);
   printf("[%c] - like a char from ASCI\n", integer_number);
-  printf("[%p] - like a pointer address\n", integer_number);
+  printf("[%p] - like a pointer address\n", (void *)&integer_number);
   printf("\n");
   printf("Type \"double\" can act...\n");
   printf("[%lf] - like a real number (fixed-notation)\n", real_number);
@@ -64,10 +64,10 @@ int main() {
   printf("[%e] - like a real number (e-notation)\n", real_number);
   printf("[%E] - like a real number (E-notation)\n", real_number);
   printf("[%g] - like a real number (smart notation)\n", real_number);
-  printf("[%p] - like a pointer address\n", real_number);
+  printf("[%p] - like a pointer address\n", (void *)&real_number);
   printf("\n");
   printf("Type \"char array\" can act...\n");
   printf("[%s] - like a string\n", string);
-  printf("[%p] - like a pointer address\n", string);
+  printf("[%p] - like a pointer address\n", (void *)&string);
   return 0;
 }

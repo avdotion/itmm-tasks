@@ -22,7 +22,7 @@ unsigned char shift_bitwise_right(unsigned char num, int shift) {
 }
 
 int main() {
-  char buffer[50];
+  char buffer[3];
   char *ptr;
 
   unsigned char x;

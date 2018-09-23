@@ -12,7 +12,7 @@ int main() {
   bool is_user_want_to_exit = false;
   int MAX_ATTEMPTS = 5;
 
-  char buffer[50];
+  char buffer[10];
   char *ptr;
 
   // Mainloop

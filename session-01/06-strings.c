@@ -7,69 +7,69 @@
 int main() {
   char symbol;
 
-  unsigned int sentences[100] = {0};
-  unsigned int words[100] = {0};
+  // Words in every i-sentence
+  int words_counter[100] = {0};
+  // Letters in every i-word
+  int letters_counter[100] = {0};
 
-  unsigned int letters_in_last_word = 0;
-  unsigned int words_in_last_sentence = 0;
-  unsigned int current_sentence = 0;
-  unsigned int current_word = 0;
+  int letters_in_last_word = 0;
+  int words_in_last_sentence = 0;
+
+  // Current entities counters
+  int sentences_count = 0;
+  int word_count = 0;
 
   // Count all words in sentences and all letters in word
   while ((symbol = getchar()) != EOF) {
-    if ((symbol == ' ' || symbol == '\n')&& letters_in_last_word) {
-      words[current_word] = letters_in_last_word;
+    if ((symbol == ' ' || symbol == '\n') && letters_in_last_word) {
+      letters_counter[word_count++] = letters_in_last_word;
       letters_in_last_word = 0;
-      current_word++;
       words_in_last_sentence++;
     } else if (symbol == '.' || symbol == '?' || symbol == '!') {
       if (letters_in_last_word) {
-        words[current_word] = letters_in_last_word;
+        letters_counter[word_count++] = letters_in_last_word;
         letters_in_last_word = 0;
-        current_word++;
         words_in_last_sentence++;
       }
-      sentences[current_sentence] = words_in_last_sentence;
+      words_counter[sentences_count] = words_in_last_sentence;
       words_in_last_sentence = 0;
-      current_sentence++;
+      sentences_count++;
     } else {
       letters_in_last_word++;
     }
   }
 
   if (letters_in_last_word) {
-    words[current_word] = letters_in_last_word;
+    letters_counter[word_count++] = letters_in_last_word;
     letters_in_last_word = 0;
-    current_word++;
     words_in_last_sentence++;
   }
 
   if (words_in_last_sentence) {
-    sentences[current_sentence] = words_in_last_sentence;
+    words_counter[sentences_count++] = words_in_last_sentence;
     words_in_last_sentence = 0;
-    current_sentence++;
   }
 
   printf("\n");
   // Display the words chart
-  for (unsigned int i = 0; i < current_word + 1; ++i) {
-    for (unsigned int stars = 0; stars < words[i]; ++stars) {
+  for (int i = 0; i < word_count + 1; ++i) {
+    for (int stars = 0; stars < letters_counter[i]; ++stars) {
       printf("*");
     }
     printf("\n");
   }
 
   // Display the sentences chart
-  unsigned int longest_sentence_length = 0;
-  for (unsigned int i = 0; i < current_sentence; ++i) {
-    if (sentences[i] > longest_sentence_length) {
-      longest_sentence_length = sentences[i];
+  int longest_sentence_length = 0;
+  for (int i = 0; i < sentences_count; ++i) {
+    if (words_counter[i] > longest_sentence_length) {
+      longest_sentence_length = words_counter[i];
     }
   }
 
   for (int height = longest_sentence_length; height >= 0; height--) {
-    for (unsigned int i = 0; i < current_sentence; ++i) {
-      if (height < sentences[i]) {
+    for (int i = 0; i < sentences_count; ++i) {
+      if (height < words_counter[i]) {
         printf("*");
       } else {
         printf(" ");

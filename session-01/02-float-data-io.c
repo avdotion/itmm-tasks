@@ -8,7 +8,7 @@
 int main() {
   int numbers_count;
 
-  char buffer[50];
+  char buffer[10];
   char *ptr;
 
   printf("Enter count of the real numbers: ");

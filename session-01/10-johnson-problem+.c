@@ -97,7 +97,7 @@ int main() {
     return EXIT_FAILURE;
   }
 
-  char buffer[50];
+  char buffer[10];
   char *ptr;
 
   fscanf(fin, "%s", buffer);

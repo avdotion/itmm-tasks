@@ -18,15 +18,15 @@ int main() {
 
   int strings_counter = 0;
   char **input = NULL;
-  char **more_input = NULL;
+  char **another_input = NULL;
 
   do {
     fgets(name, 100, stdin);
     strings_counter++;
-    more_input = (char **)realloc(input, strings_counter * sizeof(name));
+    another_input = (char **)realloc(input, strings_counter * sizeof(name));
 
-    if (more_input != NULL) {
-      input = more_input;
+    if (another_input != NULL) {
+      input = another_input;
       input[strings_counter-1] = strdup(name);
     }
 

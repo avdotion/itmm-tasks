@@ -93,7 +93,7 @@ void insert(dict *d, char *key, char *value) {
 char *search_list(node *current_node, char *key) {
   node *previous_node = NULL;
   while (current_node) {
-    if (current_node->key = key) {
+    if (current_node->key == key) {
       return current_node->value;
     }
     previous_node = current_node;

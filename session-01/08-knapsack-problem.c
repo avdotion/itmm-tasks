@@ -20,20 +20,20 @@ int get_by_index(bitmask b, int index) {
   return b % 2;
 }
 
-double get_weight(bitmask k) {
+double get_weight(const bitmask *k) {
   double capacity = 0;
   for (int i = 0; i < items_number; ++i) {
-    if (get_by_index(k, i)) {
+    if (get_by_index(*k, i)) {
       capacity += items_weights[i];
     }
   }
   return capacity;
 }
 
-double get_value(bitmask k) {
+double get_value(const bitmask *k) {
   double value = 0;
   for (int i = 0; i < items_number; ++i) {
-    if (get_by_index(k, i)) {
+    if (get_by_index(*k, i)) {
       value += items_values[i];
     }
   }
@@ -44,8 +44,8 @@ void solve_knapsack_problem(int step, bitmask knapsack) {
   if (step < items_number) {
     solve_knapsack_problem(step + 1, (knapsack << 1) + 0);
     solve_knapsack_problem(step + 1, (knapsack << 1) + 1);
-  } else if (get_weight(knapsack) <= knapsack_capacity &&
-             get_value(knapsack) >= get_value(best_solution)) {
+  } else if (get_weight(&knapsack) <= knapsack_capacity &&
+             get_value(&knapsack) >= get_value(&best_solution)) {
         best_solution = knapsack;
   }
 }
@@ -65,7 +65,7 @@ int main() {
   bitmask knapsack = 0;
 
   solve_knapsack_problem(0, knapsack);
-  printf("%lf\n", get_value(best_solution));
+  printf("%lf\n", get_value(&best_solution));
 
   return 0;
 }
