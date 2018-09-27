@@ -1,10 +1,9 @@
 // TASK: Formated I/O
 // STATUS: DONE
-// MARK: PENDING
+// MARK: CALL-DOWN
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <memory.h>
 
 int main() {
   // Assignment
@@ -25,7 +24,7 @@ int main() {
   scanf("%s", buffer);
   integer_number = (int)strtol(buffer, &ptr, 10);
 
-  printf("Enter an real number (double): ");
+  printf("Enter a real number (double): ");
   scanf("%s", buffer);
   real_number = strtod(buffer, &ptr);
   getchar();
@@ -44,16 +43,16 @@ int main() {
   printf("[%5c] - like a char with width equals to 5\n", symbol);
   printf("[%-5c] - like a char with width equals to 5 (left-aligned)\n", symbol);
   printf("[%d] - like an decimal integer (symbol-code)\n", symbol);
-  printf("[%o] - like an octal integer\n", symbol);
-  printf("[%x] - like an hexadecimal integer\n", symbol);
+  printf("[%#o] - like an octal integer\n", symbol);
+  printf("[%#x] - like an hexadecimal integer\n", symbol);
   printf("[%p] - like a pointer address\n", (void *)&symbol);
   printf("\n");
   printf("Type \"int\" can act...\n");
   printf("[%d] - like a decimal integer\n", integer_number);
   printf("[%+d] - like a decimal integer (+ forced)\n", integer_number);
   printf("[%u] - like a decimal unsigned integer\n", integer_number);
-  printf("[%o] - like an octal integer\n", integer_number);
-  printf("[%x] - like an hexadecimal integer\n", integer_number);
+  printf("[%#o] - like an octal integer\n", integer_number);
+  printf("[%#x] - like an hexadecimal integer\n", integer_number);
   printf("[%c] - like a char from ASCI\n", integer_number);
   printf("[%p] - like a pointer address\n", (void *)&integer_number);
   printf("\n");

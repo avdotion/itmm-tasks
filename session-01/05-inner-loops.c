@@ -1,6 +1,6 @@
 // TASK: Inner loops
 // STATUS: DONE
-// MARK: PENDING
+// MARK: CALL-DOWN
 
 #include <stdio.h>
 #include <time.h>
@@ -10,7 +10,7 @@
 int main() {
   srand((unsigned int)time(NULL));
   bool is_user_want_to_exit = false;
-  int MAX_ATTEMPTS = 5;
+  int MAX_ATTEMPTS = 7;
 
   char buffer[10];
   char *ptr;
@@ -30,7 +30,7 @@ int main() {
       user_guess = (int)strtol(buffer, &ptr, 10);
 
       if (user_guess == number) {
-        printf("You are totally right! (attemps = %d)\n", attempts);
+        printf("You are totally right! (attempts = %d)\n", attempts);
         user_won = true;
       } else {
         if (user_guess > number) {

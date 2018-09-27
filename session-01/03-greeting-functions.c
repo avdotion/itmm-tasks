@@ -1,6 +1,6 @@
 // TASK: Function greeting
 // STATUS: DONE
-// MARK: PENDING
+// MARK: CALL-DOWN
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,7 +11,7 @@ bool is_prime(long long int n) {
   if (n % 2 == 0) {
     return n == 2;
   }
-  unsigned long long int d = 3;
+  long long int d = 3;
   while (n % d != 0 && d * d <= n) {
     d += 2;
   }
@@ -20,21 +20,27 @@ bool is_prime(long long int n) {
 
 int main() {
   printf("Enter even N (N > 2): ");
+
   char buffer[10];
   char *ptr;
 
+  bool wrong_input = false;
+
   unsigned long long int n;
-  scanf("%s", buffer);
-  n = strtoull(buffer, &ptr, 10);
-  if (n > 2 && n % 2 == 0) {
-    for (unsigned long long int i = 2; i <= n / 2; ++i) {
-      if (is_prime(i) && is_prime(n - i)) {
-        printf("(%llu, %llu), ", i, n - i);
-      }
+  do {
+    if (wrong_input) {
+      printf("Oops, something went wrong! Please, try again: ");
     }
-    printf("\n");
-  } else {
-    printf("Oops, something went wrong...\n");
+    scanf("%s", buffer);
+    n = strtoull(buffer, &ptr, 10);
+    wrong_input = true;
+  } while (!(n > 2 && n % 2 == 0));
+
+  for (long long int i = 2; i <= n / 2; ++i) {
+    if (is_prime(i) && is_prime(n - i)) {
+      printf("(%llu, %llu), ", i, n - i);
+    }
   }
+  printf("\n");
   return 0;
 }

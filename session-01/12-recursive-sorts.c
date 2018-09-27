@@ -12,13 +12,13 @@ typedef struct {
   size_t _reserved_size;
 } array;
 
-void initArray(array *a, size_t initial_size) {
+void init_array(array *a, size_t initial_size) {
   a->data = (int *)malloc(initial_size * sizeof(int));
   a->size = 0;
   a->_reserved_size = initial_size;
 }
 
-void insertArray(array *a, int item) {
+void insert_array(array *a, int item) {
   if (a->size == a->_reserved_size) {
     a->_reserved_size *= 2;
     a->data = (int *)realloc(a->data, a->_reserved_size * sizeof(int));
@@ -26,13 +26,13 @@ void insertArray(array *a, int item) {
   a->data[a->size++] = item;
 }
 
-void freeArray(array *a) {
+void free_array(array *a) {
   free(a->data);
   a->data = NULL;
   a->size = a->_reserved_size = 0;
 }
 
-void printArray(array *a) {
+void print_array(array *a) {
   if (a->size) {
     printf("[");
     for (int i = 0; i < a->size - 1; ++i) {
@@ -46,52 +46,52 @@ void printArray(array *a) {
 
 // MergeSort algorithm
 
-void selectionSort(array *);
+void selection_sort(array *);
 
 array merge(array *a, array *b) {
   array c;
-  initArray(&c, 1);
+  init_array(&c, 1);
   int i = 0;
   int j = 0;
 
   while (i < a->size && j < b->size) {
     if (a->data[i] <= b->data[j]) {
-      insertArray(&c, a->data[i]);
+      insert_array(&c, a->data[i]);
       i++;
     } else {
-      insertArray(&c, b->data[j]);
+      insert_array(&c, b->data[j]);
       j++;
     }
   }
   for (; i < a->size; ++i) {
-    insertArray(&c, a->data[i]);
+    insert_array(&c, a->data[i]);
   }
   for (; j < b->size; ++j) {
-    insertArray(&c, b->data[j]);
+    insert_array(&c, b->data[j]);
   }
   return c;
 }
 
-void mergeSort(array *a) {
+void merge_sort(array *a) {
   if (1 < a->size && a->size < 5) {
-    selectionSort(a);
+    selection_sort(a);
   } else if (a->size >= 5) {
     int middle = (int)(a->size / 2);
 
     array l;
-    initArray(&l, 1);
+    init_array(&l, 1);
     for (int i = 0; i < middle; ++i) {
-      insertArray(&l, a->data[i]);
+      insert_array(&l, a->data[i]);
     }
 
     array r;
-    initArray(&r, 1);
+    init_array(&r, 1);
     for (int i = middle; i < a->size; ++i) {
-      insertArray(&r, a->data[i]);
+      insert_array(&r, a->data[i]);
     }
 
-    mergeSort(&l);
-    mergeSort(&r);
+    merge_sort(&l);
+    merge_sort(&r);
 
     array c = merge(&l, &r);
     *a = c;
@@ -107,7 +107,7 @@ void swap(int* a, int* b)
   *b = temp;
 }
 
-void selectionSort(array *a) {
+void selection_sort(array *a) {
   for (int j = 0; j < a->size - 1; ++j) {
     int iMin = j;
     for (int i = j + 1; i < a->size; ++i) {
@@ -124,12 +124,12 @@ void selectionSort(array *a) {
 
 int main() {
   array simple_array;
-  initArray(&simple_array, 1);
+  init_array(&simple_array, 1);
   for (int i = 60; i >= 0; --i) {
-    insertArray(&simple_array, i);
+    insert_array(&simple_array, i);
   }
-  printArray(&simple_array);
-  mergeSort(&simple_array);
-  printArray(&simple_array);
+  print_array(&simple_array);
+  merge_sort(&simple_array);
+  print_array(&simple_array);
 
 }

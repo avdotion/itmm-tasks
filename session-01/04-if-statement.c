@@ -1,12 +1,19 @@
 // TASK: IF statement, typecasting
 // STATUS: DONE
-// MARK: PENDING
+// MARK: CALL-DOWN
 
 #include <stdio.h>
 #include <stdbool.h>
 
+bool is_leap(int year) {
+  return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+}
+
 int main() {
   int day, month, year;
+
+  int MONTHS[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
   printf("Enter date in format dd/mm/yyyy: ");
   bool wrong_input = false;
   do {
@@ -15,14 +22,17 @@ int main() {
     }
     scanf("%d/%d/%d", &day, &month, &year);
     wrong_input = true;
-  } while (!(1 <= day && day <= 31 &&
-             1 <= month && month <= 12 &&
-             1582 <= year && year <= 4902)
-  );
+  } while (!(((1 <= month <= 12) && (1582 <= year && year <= 4902)) &&
+             ((1 <= day && day <= MONTHS[month-1]) ||
+              (month == 2 && is_leap(year) && 1 <= day && day <= MONTHS[month-1] + 1))));
+
+  if (month == 0 || month == 1) {
+    year--;
+  }
 
   month = (month - 3) % 12 + 1;
 
-  if (month <= 0) {
+  while (month <= 0) {
     month += 12;
   }
 
@@ -35,7 +45,7 @@ int main() {
 
   // Offset
   weekday--;
-  if (weekday < 0) {
+  while (weekday < 0) {
     weekday += 7;
   }
   weekday %= 7;

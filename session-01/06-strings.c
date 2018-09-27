@@ -1,6 +1,6 @@
 // TASK: C-Strings
 // STATUS: DONE
-// MARK: PENDING
+// MARK: CALL-DOWN
 
 #include <stdio.h>
 
@@ -29,12 +29,12 @@ int main() {
       }
       words_counter[sentences_count++] = words_in_current_sentence;
       words_in_current_sentence = 0;
-    } else if (('A' <= symbol && symbol <= 'Z') || ('a' <= symbol && symbol <= 'z')) {
-      letters_in_current_word++;
-    } else if (letters_in_current_word) {
+    } else if (letters_in_current_word && (symbol == ' ' || symbol == '\n' || symbol == '\t')) {
       letters_counter[word_count++] = letters_in_current_word;
       letters_in_current_word = 0;
       words_in_current_sentence++;
+    } else {
+      letters_in_current_word++;
     }
   }
 

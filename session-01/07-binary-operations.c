@@ -1,15 +1,19 @@
 // TASK: Bitwise operations
 // STATUS: DONE
-// MARK: PENDING
+// MARK: CALL-DOWN
 
 #include <stdio.h>
 #include <stdlib.h>
 
-int getBinary(unsigned int n) {
-  if (n) {
-    return n % 2 + 10 * getBinary(n / 2);
-  } else {
-    return 0;
+void print_binary(unsigned char n, int length) {
+  if (length > 0) {
+    if (n) {
+      print_binary(n >> 1, length-1);
+      printf("%d", n % 2);
+    } else {
+      print_binary(0, length-1);
+      printf("0");
+    }
   }
 }
 
@@ -26,7 +30,7 @@ int main() {
   char *ptr;
 
   unsigned char x;
-  printf("Enter valid decimal integer: ");
+  printf("Enter valid decimal integer [0, 255]: ");
 
   scanf("%s", buffer);
   x = (unsigned char)strtoul(buffer, &ptr, 10);
@@ -42,13 +46,19 @@ int main() {
 
   if (direction == '<' || direction == '>') {
     printf("Given number (decimal): %u\n", x);
-    printf("Given number (binary): %d\n", getBinary(x));
+    printf("Given number (binary): ");
+    print_binary(x, 8);
+    printf("\n");
     if (direction == '<') {
       printf("Shifted number (decimal): %u\n", shift_bitwise_left(x, shift));
-      printf("Shifted number (binary): %d\n", getBinary(shift_bitwise_left(x, shift)));
+      printf("Shifted number (binary): ");
+      print_binary(shift_bitwise_left(x, shift), 8);
+      printf("\n");
     } else {
       printf("Shifted number (decimal): %u\n", shift_bitwise_right(x, shift));
-      printf("Shifted number (binary): %d\n", getBinary(shift_bitwise_right(x, shift)));
+      printf("Shifted number (binary): ");
+      print_binary(shift_bitwise_right(x, shift), 8);
+      printf("\n");
     }
   } else {
     printf("Something went wrong\n");

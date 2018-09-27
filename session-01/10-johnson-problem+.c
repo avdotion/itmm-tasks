@@ -3,53 +3,31 @@
 // MARK: PENDING
 
 /*
- * Test Example:
- * 6
- * 7 3 1 6 3 3
- * 1 5 2 4 2 2
- */
+Test Example:
+6
+7 1
+3 5
+1 2
+6 4
+3 3
+3 2
+*/
+
+// TASK: Johnson problem
+// STATUS: DONE
+// MARK: CALL-DOWN
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 int ROWS;
 int COLS = 2;
 
-typedef struct {
-  int *data;
-  size_t size;
-  size_t _reserved_size;
-} stack;
+int **matrix;
 
-void initStack(stack *a, size_t initial_size) {
-  a->data = (int *)malloc(initial_size * sizeof(int));
-  a->size = 0;
-  a->_reserved_size = initial_size;
-}
-
-void pushStack(stack *a, int item) {
-  if (a->size == a->_reserved_size) {
-    a->_reserved_size *= 2;
-    a->data = (int *)realloc(a->data, a->_reserved_size * sizeof(int));
-  }
-  a->data[a->size++] = item;
-}
-
-int popStack(stack *a) {
-  if (a->size) {
-    if (a->_reserved_size / 2 > a->size) {
-      a->_reserved_size /= 2;
-      a->data = (int *)realloc(a->data, a->_reserved_size * sizeof(int));
-    }
-    int item = a->data[a->size - 1];
-    a->size--;
-    return item;
-  }
-  return 0;
-}
-
-void printArray(int a[], int size) {
+void print_array(int a[], int size) {
   if (size) {
     printf("array(");
     for (int i = 0; i < size - 1; ++i) {
@@ -61,27 +39,6 @@ void printArray(int a[], int size) {
   }
 }
 
-typedef struct {
-  int i;
-  int j;
-} pair;
-
-pair minMatrix(int **array) {
-  pair minimum;
-  minimum.i = 0;
-  minimum.j = 0;
-
-  for (int i = 0; i < ROWS; ++i) {
-    for (int j = 0; j < COLS; ++j) {
-      if (array[i][j] < array[minimum.i][minimum.j]) {
-        minimum.i = i;
-        minimum.j = j;
-      }
-    }
-  }
-  return minimum;
-}
-
 int max(int a, int b) {
   if (a > b) {
     return a;
@@ -90,6 +47,9 @@ int max(int a, int b) {
 }
 
 int main() {
+  char buffer[10];
+  char *ptr;
+
   FILE *fin;
   fin = fopen("10-johnson-problem-test.txt", "r");
   if (!fin) {
@@ -97,81 +57,59 @@ int main() {
     return EXIT_FAILURE;
   }
 
-  char buffer[10];
-  char *ptr;
-
   fscanf(fin, "%s", buffer);
   ROWS = (int)strtol(buffer, &ptr, 10);
-  printf("%d\n", ROWS);
 
-  int element;
   int **matrix = (int **)malloc(ROWS * sizeof(int *));
   for (int i = 0; i < ROWS; i++) {
     matrix[i] = (int *)malloc(COLS * sizeof(int));
   }
 
-  int index = 0;
-
-  for (int i = 0; i < ROWS; ++i) {
-    fscanf(fin, "%s", buffer);
-    matrix[i][0] = (int)strtol(buffer, &ptr, 10);
-  }
-
-  for (int i = 0; i < ROWS; ++i) {
-    fscanf(fin, "%s", buffer);
-    matrix[i][1] = (int)strtol(buffer, &ptr, 10);
-  }
-
-  // Copy data from given array to "copied"
-  int matrix_copied[ROWS][COLS];
   for (int i = 0; i < ROWS; ++i) {
     for (int j = 0; j < COLS; ++j) {
-      matrix_copied[i][j] = matrix[i][j];
+      fscanf(fin, "%s", buffer);
+      matrix[i][j] = (int)strtol(buffer, &ptr, 10);
     }
   }
 
-  // The Johnson problem algorithm
-  stack first_machine;
-  initStack(&first_machine, 1);
-  stack second_machine;
-  initStack(&second_machine, 1);
+  bool in_matrix[ROWS];
+  for (int i = 0; i < ROWS; ++i) {
+    in_matrix[i] = true;
+  }
+
+  int solution[ROWS];
+  int *lower_bound, *upper_bound;
+  lower_bound = solution;
+  upper_bound = solution + ROWS - 1;
 
   while (1) {
-    pair minimum = minMatrix(matrix);
-    if (matrix[minimum.i][minimum.j] == 1337) {
-      break;
-    } else if (minimum.j == 0) {
-      pushStack(&first_machine, minimum.i + 1);
-      matrix[minimum.i][0] = 1337;
-      matrix[minimum.i][1] = 1337;
-    } else if (minimum.j == 1) {
-      pushStack(&second_machine, minimum.i + 1);
-      matrix[minimum.i][0] = 1337;
-      matrix[minimum.i][1] = 1337;
+    // Find minimum
+    int minimum_index = -1;
+    int minimum_value = 0;
+    for (int i = 0; i < ROWS; ++i) {
+      if (in_matrix[i]) {
+        for (int j = 0; j < COLS; ++j) {
+          if (minimum_index == -1 || minimum_value > matrix[i][j]) {
+            minimum_index = i;
+            minimum_value = matrix[i][j];
+          }
+        }
+      }
     }
+
+    if (minimum_index == -1) {
+      break;
+    } else if (matrix[minimum_index][0] <= matrix[minimum_index][1]) {
+      *lower_bound = minimum_index + 1;
+      lower_bound++;
+    } else {
+      *upper_bound = minimum_index + 1;
+      upper_bound--;
+    }
+    in_matrix[minimum_index] = false;
   }
 
-  // Reverse the first stack
-  stack first_machine_reversed;
-  initStack(&first_machine_reversed, 1);
-
-  while (first_machine.size != 0) {
-    pushStack(&first_machine_reversed, popStack(&first_machine));
-  }
-
-  // P - maybe from "Process"?
-  // Print solution in given form
-  int P[ROWS];
-  int P_index = 0;
-  while (first_machine_reversed.size != 0) {
-    P[P_index++] = popStack(&first_machine_reversed);
-  }
-
-  while (second_machine.size != 0) {
-    P[P_index++] = popStack(&second_machine);
-  }
-
-  printArray(P, ROWS);
+  print_array(solution, ROWS);
 
   char first_machine_element[2];
   char first_machine_graph[200] = {'\0'};
@@ -181,10 +119,10 @@ int main() {
   int first_machine_index = 0;
   int second_machine_index = 0;
 
-  P_index = 0;
+  int s_index = 0;
   for (int i = 0; i < ROWS; ++i) {
-    for (int j = 0; j < matrix_copied[P[P_index]-1][0]; ++j) {
-      sprintf(first_machine_element, "%d", P[P_index]);
+    for (int j = 0; j < matrix[solution[s_index]-1][0]; ++j) {
+      sprintf(first_machine_element, "%d", solution[s_index]);
       strcat(first_machine_graph, first_machine_element);
       first_machine_index++;
     }
@@ -195,13 +133,13 @@ int main() {
       second_machine_index++;
     }
 
-    for (int j = 0; j < matrix_copied[P[P_index]-1][1]; ++j) {
-      sprintf(second_machine_element, "%d", P[P_index]);
+    for (int j = 0; j < matrix[solution[s_index]-1][1]; ++j) {
+      sprintf(second_machine_element, "%d", solution[s_index]);
       strcat(second_machine_graph, second_machine_element);
       second_machine_index++;
     }
 
-    P_index++;
+    s_index++;
   }
 
   printf("Machine 1: %s\n", first_machine_graph);
