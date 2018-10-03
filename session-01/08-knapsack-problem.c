@@ -1,6 +1,6 @@
 // TASK: Knapsack problem
 // STATUS: DONE
-// MARK: CALL-DOWN
+// MARK: CALL-DOWN AGAIN
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,10 +15,7 @@ double items_weights[sizeof(bitmask)];
 double items_values[sizeof(bitmask)];
 
 int get_by_index(bitmask b, int index) {
-  for (int i = 0; i < index; ++i) {
-    b = b >> 1;
-  }
-  return b % 2;
+  return (b >> index) % 2;
 }
 
 double get_weight(const bitmask *k) {
@@ -52,13 +49,13 @@ int main() {
   printf("Enter weights in a single line: ");
   for (int i = 0; i < items_number; ++i) {
     scanf("%s", buffer);
-    items_weights[i] = (int)strtod(buffer, &ptr);
+    items_weights[i] = (double)strtod(buffer, &ptr);
   }
 
   printf("Enter values in a single line: ");
   for (int i = 0; i < items_number; ++i) {
     scanf("%s", buffer);
-    items_values[i] = (int)strtod(buffer, &ptr);
+    items_values[i] = (double)strtod(buffer, &ptr);
   }
 
   printf("Enter knapsack capacity: ");
@@ -73,7 +70,13 @@ int main() {
     }
   }
 
-  printf("%lf\n", get_value(&best_solution));
-
+  printf("Solution is %lf\n", get_value(&best_solution));
+  printf("You may take:\n");
+  for (int i = 0; i < items_number; ++i) {
+    if (get_by_index(best_solution, i)) {
+      printf("item #%d (w = %.2f, c = %.2f)\n", i+1, items_weights[i], items_values[i]);
+    }
+  }
+  
   return 0;
 }

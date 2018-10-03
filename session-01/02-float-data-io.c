@@ -1,6 +1,6 @@
 // TASK: Real numbers I/O
 // STATUS: DONE
-// MARK: CALL-DOWN
+// MARK: PASSED
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,6 +67,6 @@ int main() {
     numbers_sum += numbers[i];
   }
 
-  printf("Sum of the numbers: %.2Lf\n", numbers_sum);
+  printf("%.2Lf\n", numbers_sum);
   return 0;
 }

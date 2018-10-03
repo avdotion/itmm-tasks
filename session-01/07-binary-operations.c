@@ -1,6 +1,6 @@
 // TASK: Bitwise operations
 // STATUS: DONE
-// MARK: CALL-DOWN
+// MARK: PASSED
 
 #include <stdio.h>
 #include <stdlib.h>

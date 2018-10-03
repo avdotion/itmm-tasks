@@ -1,5 +1,5 @@
 // TASK: User database (hash table)
-// STATUS: file I/O not working yet
+// STATUS: File I/O haven't worked yet
 // MARK: PENDING
 
 #include <stdlib.h>

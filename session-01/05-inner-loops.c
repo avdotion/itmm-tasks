@@ -1,6 +1,6 @@
 // TASK: Inner loops
 // STATUS: DONE
-// MARK: CALL-DOWN
+// MARK: PASSED
 
 #include <stdio.h>
 #include <time.h>

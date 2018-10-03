@@ -1,6 +1,6 @@
 // TASK: C-Strings
 // STATUS: DONE
-// MARK: CALL-DOWN
+// MARK: CALL-DOWN AGAIN
 
 #include <stdio.h>
 
@@ -19,6 +19,8 @@ int main() {
   int sentences_count = 0;
   int word_count = 0;
 
+  printf("Just start typing any letters down here...\n");
+
   // Count all words in each sentences and all letters in each word
   while ((symbol = getchar()) != EOF) {
     if (symbol == '.' || symbol == '?' || symbol == '!') {
@@ -29,10 +31,12 @@ int main() {
       }
       words_counter[sentences_count++] = words_in_current_sentence;
       words_in_current_sentence = 0;
-    } else if (letters_in_current_word && (symbol == ' ' || symbol == '\n' || symbol == '\t')) {
-      letters_counter[word_count++] = letters_in_current_word;
-      letters_in_current_word = 0;
-      words_in_current_sentence++;
+    } else if (symbol == ' ' || symbol == '\n' || symbol == '\t') {
+      if (letters_in_current_word) {
+        letters_counter[word_count++] = letters_in_current_word;
+        letters_in_current_word = 0;
+        words_in_current_sentence++;
+      }
     } else {
       letters_in_current_word++;
     }
@@ -52,7 +56,7 @@ int main() {
   printf("\n\n");
   printf("The text contains %d words and %d sentences\n", word_count, sentences_count);
   // Display the words chart
-  for (int i = 0; i < word_count + 1; ++i) {
+  for (int i = 0; i < word_count; ++i) {
     for (int stars = 0; stars < letters_counter[i]; ++stars) {
       printf("*");
     }

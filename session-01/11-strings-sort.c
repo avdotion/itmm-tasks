@@ -1,6 +1,9 @@
 // TASK: Strings sorting
 // STATUS: DONE
-// MARK: PENDING
+// MARK: CALLED-DOWN
+
+// TODO:
+// [ ] redeclare cmp for strings
 
 #include <stdio.h>
 #include <string.h>

@@ -1,6 +1,6 @@
 // TASK: IF statement, typecasting
 // STATUS: DONE
-// MARK: CALL-DOWN
+// MARK: CALL-DOWN AGAIN
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -14,17 +14,30 @@ int main() {
 
   int MONTHS[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-  printf("Enter date in format dd/mm/yyyy: ");
-  bool wrong_input = false;
+  bool is_data_correct;
   do {
-    if (wrong_input) {
-      printf("Oh, input date is not correct. Please, try again: ");
-    }
+    printf("Enter date in format dd/mm/yyyy: ");
     scanf("%d/%d/%d", &day, &month, &year);
-    wrong_input = true;
-  } while (!(((1 <= month <= 12) && (1582 <= year && year <= 4902)) &&
-             ((1 <= day && day <= MONTHS[month-1]) ||
-              (month == 2 && is_leap(year) && 1 <= day && day <= MONTHS[month-1] + 1))));
+
+    is_data_correct = true;
+
+    if (!(1 <= month && month <= 12)) {
+      printf("Entered month isn't correct!\n");
+      is_data_correct = false;
+    }
+
+    if (!(1582 <= year && year <= 4902)) {
+      printf("Entered year should be between 1582 and 4902!\n");
+      is_data_correct = false;
+    }
+
+    if (!((1 <= day && day <= MONTHS[month-1]) ||
+          (month == 2 && is_leap(year) && 1 <= day && day <= MONTHS[month-1] + 1))) {
+      printf("The day %d isn't exist in that month!\n", day);
+      is_data_correct = false;
+    }
+
+  } while (!is_data_correct);
 
   if (month == 0 || month == 1) {
     year--;
