@@ -29,7 +29,7 @@ int hash(char *key, int hash_length) {
   return d;
 }
 
-dict* newDict(int hash_length) {
+dict* new_dict(int hash_length) {
   dict *hash_table = (dict*)malloc(sizeof(dict));
   hash_table->HASH_LENGTH = hash_length;
   hash_table->data = malloc(sizeof(node *) * (int)pow(2, hash_table->HASH_LENGTH));
@@ -101,7 +101,7 @@ char *search_list(node *current_node, char *key) {
   }
 }
 
-void displayDict(dict *d) {
+void display_dict(dict *d) {
   printf("dict{\n");
   for (int i = 0; i < (int)pow(2, d->HASH_LENGTH); ++i) {
     if (d->data[i] != NULL) {
@@ -121,7 +121,7 @@ char *get(dict *d, char *key) {
 }
 
 int main() {
-  dict *first_dict = newDict(20);
+  dict *first_dict = new_dict(20);
 
   insert(first_dict, "a\0", "animal\0");
   insert(first_dict, "b\0", "ball\0");

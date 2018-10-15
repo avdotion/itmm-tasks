@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#define RANDOM_ARRAY_SIZE 10
 
 // Dynamically growing array structure
 typedef struct {
@@ -123,11 +125,29 @@ void selection_sort(array *a) {
 
 
 int main() {
+  srand(time(NULL));
+  char buffer[100];
+  char *ptr;
+  
   array simple_array;
   init_array(&simple_array, 1);
-  for (int i = 60; i >= 0; --i) {
-    insert_array(&simple_array, i);
+  
+  for (int i = 0; i < RANDOM_ARRAY_SIZE; ++i) {
+    insert_array(&simple_array, rand() % 100);
   }
+
+  // Fool protection!
+
+  // printf("How many values do you want to sort?\n");
+  // scanf("%s", buffer);
+  // int numbers_count = (int)strtol(buffer, &ptr, 10);
+
+  // printf("Enter values you want to sort down here...\n");
+  // for (int i = 0; i < numbers_count; ++i) {
+  //   scanf("%s", buffer);
+  //   insert_array(&simple_array, (int)strtol(buffer, &ptr, 10));
+  // }
+
   print_array(&simple_array);
   merge_sort(&simple_array);
   print_array(&simple_array);

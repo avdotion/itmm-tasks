@@ -2,43 +2,86 @@
 // STATUS: DONE
 // MARK: CALLED-DOWN
 
-// TODO:
-// [ ] redeclare cmp for strings
-
 #include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
+#define MAX_BUFFER_SIZE 50
 
-int cmp_p_strings(const void *a, const void *b) {
-  const char **ia = (const char **)a;
-  const char **ib = (const char **)b;
-  return strcmp(*ia, *ib);
+int compare_strings_case(char *s1, char *s2) {
+  while (*s1 && *s2) {
+    if (tolower(*s1) != tolower(*s2)) {
+      break;
+    }
+    ++s1;
+    ++s2;
+  }
+  return tolower(*s1) - tolower(*s2);
+}
+
+int compare_strings(char *s1, char *s2) {
+  while (*s1 && *s2) {
+    if (*s1 != *s2) {
+      break;
+    }
+    ++s1;
+    ++s2;
+  }
+  return *s1 - *s2;
 }
 
 int main() {
-  const size_t MAX_NAME = 50;
-  char name[MAX_NAME];
+  char buffer[MAX_BUFFER_SIZE];
 
   int strings_counter = 0;
-  char **input = NULL;
-  char **another_input = NULL;
+  char **strings = NULL;
+  char **_strings = NULL;
 
-  do {
-    fgets(name, 100, stdin);
-    strings_counter++;
-    another_input = (char **)realloc(input, strings_counter * sizeof(name));
+  printf("Just start typing any items down here...\n");
 
-    if (another_input != NULL) {
-      input = another_input;
-      input[strings_counter-1] = strdup(name);
+  while (1) {
+    fgets(buffer, MAX_BUFFER_SIZE, stdin);
+    
+    if (buffer[0] == '\n') {
+      break;
     }
+    
+    strings_counter++;
+    _strings = (char **)realloc(strings, strings_counter * sizeof(buffer));
 
-  } while (strcmp(name, "\n") != 0);
+    if (_strings != NULL) {
+      strings = _strings;
+      strings[strings_counter-1] = strdup(buffer);
+    }
+  }
 
-  qsort(input, (int)(strings_counter - 1), sizeof(char *), cmp_p_strings);
+  char ***p_strings = (char ***)malloc(strings_counter * sizeof(char **));
+  for (int i = 0; i < strings_counter; ++i) {
+    p_strings[i] = &strings[i];
+  }
 
-  printf("Sorted strings:\n");
+  printf("\n");
 
-  for (int i = 0; i < strings_counter-1; i++)
-    printf("%s", input[i]);
+  char **temp = NULL;
+
+  for (int i = 0; i < strings_counter; ++i) {
+    for (int j = 0; j < strings_counter - i - 1; ++j) {
+      if (compare_strings(*p_strings[j], *p_strings[j + 1]) > 0) {
+        temp = p_strings[j];
+        p_strings[j] = p_strings[j + 1];
+        p_strings[j + 1] = temp; 
+      }
+    }
+  }
+
+  printf("The list before sorting:\n");
+  for (int i = 0; i < strings_counter; ++i) {
+    printf("%s", strings[i]);
+  }
+  printf("\n");
+
+  printf("The list after sorting:\n");
+  for (int i = 0; i < strings_counter; ++i) {
+    printf("%s", *p_strings[i]);
+  }
 }

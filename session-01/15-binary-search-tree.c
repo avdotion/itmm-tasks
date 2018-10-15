@@ -16,7 +16,7 @@ typedef struct _tree_node {
   struct _tree_node *right_child;
 } tree_node;
 
-tree_node *addLeaf(tree_node *wild_tree, char *string) {
+tree_node *add_leaf(tree_node *wild_tree, char *string) {
   if (wild_tree == NULL) {
     wild_tree = (tree_node *)malloc(sizeof(tree_node));
     wild_tree->word = strdup(string);
@@ -27,27 +27,27 @@ tree_node *addLeaf(tree_node *wild_tree, char *string) {
     if (cond == 0) {
       wild_tree->count++;
     } else if (cond < 0) {
-      wild_tree->left_child = addLeaf(wild_tree->left_child, string);
+      wild_tree->left_child = add_leaf(wild_tree->left_child, string);
     } else {
-      wild_tree->right_child = addLeaf(wild_tree->right_child, string);
+      wild_tree->right_child = add_leaf(wild_tree->right_child, string);
     }
   }
   return wild_tree;
 }
 
-void freeLeaf(tree_node *tree) {
+void free_leaf(tree_node *tree) {
   if (tree != NULL) {
-    freeLeaf(tree->left_child);
-    freeLeaf(tree->right_child);
+    free_leaf(tree->left_child);
+    free_leaf(tree->right_child);
     free(tree);
   }
 }
 
-void treePrint(tree_node *p) {
+void tree_print(tree_node *p) {
   if (p != NULL) {
-    treePrint(p->left_child);
+    tree_print(p->left_child);
     printf("%d %s\n", p->count, p->word);
-    treePrint(p->right_child);
+    tree_print(p->right_child);
   }
 }
 int main() {
@@ -62,16 +62,17 @@ int main() {
 
   char symbol;
   while ((symbol = (char)fgetc(text)) != EOF) {
+    // 'a' <= symbol && symbol <= 'z' || 'A' <= symbol && symbol <= 'Z'
     if (symbol == ' ' || symbol == '!' || symbol == '?' ||
         symbol == '.' || symbol == ',' || symbol == '\n' ||
-        symbol == ';' || symbol == ':') {
+        symbol == ';' || symbol == ':' || symbol == '\t') {
       if (letters_in_current_word > 0) {
         char word[letters_in_current_word+1];
         for (int i = 0; i < letters_in_current_word; ++i) {
           (word)[i] = current_word[i];
         }
         word[letters_in_current_word] = 0;
-        root = addLeaf(root, word);
+        root = add_leaf(root, word);
         letters_in_current_word = 0;
       }
     } else if (isalpha(symbol)) {
@@ -80,8 +81,8 @@ int main() {
     }
   }
 
-  treePrint(root);
-  freeLeaf(root);
+  tree_print(root);
+  free_leaf(root);
 
   return 0;
 }
