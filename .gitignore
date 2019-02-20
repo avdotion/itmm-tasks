@@ -1,1 +1,7 @@
-.vscode
+*
+!.gitattributes
+!.gitignore
+!README.md
+!.gitkeep
+!*.c
+!*/

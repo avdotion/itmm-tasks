@@ -1,6 +1,6 @@
 // TASK: Merge sort
 // STATUS: DONE
-// MARK: PENDING
+// MARK: PASSED
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -128,10 +128,10 @@ int main() {
   srand(time(NULL));
   char buffer[100];
   char *ptr;
-  
+
   array simple_array;
   init_array(&simple_array, 1);
-  
+
   for (int i = 0; i < RANDOM_ARRAY_SIZE; ++i) {
     insert_array(&simple_array, rand() % 100);
   }

@@ -1,6 +1,6 @@
 // TASK: Strings sorting
 // STATUS: DONE
-// MARK: CALLED-DOWN
+// MARK: PASSED
 
 #include <stdio.h>
 #include <ctype.h>
@@ -41,11 +41,11 @@ int main() {
 
   while (1) {
     fgets(buffer, MAX_BUFFER_SIZE, stdin);
-    
+
     if (buffer[0] == '\n') {
       break;
     }
-    
+
     strings_counter++;
     _strings = (char **)realloc(strings, strings_counter * sizeof(buffer));
 
@@ -69,7 +69,7 @@ int main() {
       if (compare_strings(*p_strings[j], *p_strings[j + 1]) > 0) {
         temp = p_strings[j];
         p_strings[j] = p_strings[j + 1];
-        p_strings[j + 1] = temp; 
+        p_strings[j + 1] = temp;
       }
     }
   }

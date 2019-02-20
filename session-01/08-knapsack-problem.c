@@ -1,6 +1,6 @@
 // TASK: Knapsack problem
 // STATUS: DONE
-// MARK: CALLED-DOWN AGAIN
+// MARK: PASSED
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,6 +77,6 @@ int main() {
       printf("item #%d (w = %.2f, c = %.2f)\n", i+1, items_weights[i], items_values[i]);
     }
   }
-  
+
   return 0;
 }

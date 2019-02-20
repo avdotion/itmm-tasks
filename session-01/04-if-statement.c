@@ -1,6 +1,6 @@
 // TASK: IF statement, typecasting
 // STATUS: DONE
-// MARK: CALLED-DOWN AGAIN
+// MARK: PASSED
 
 #include <stdio.h>
 #include <stdbool.h>
