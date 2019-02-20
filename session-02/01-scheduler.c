@@ -1,38 +1,11 @@
-// TASK: Priority Planning Scheduler
+// TASK: Scheduler (fcfs & sjf)
 // STATUS: NOT PASSED YET
 // MARK: ON HOLD
-
-/*
-  Usage example:
-
-  processors_limit = 6
-  [label] [delay] [CPU-burst] [N] [priority]
-   A       1       3           3   2
-   B       2       4           2   2
-   C       3       2           3   1
-   D       0       5           1   2
-
-       1  2  3  4  5  6
-    +---------------------processors-->
-  0 | [D][             ]
-  1 | [A  A  A][D][    ]
-  2 | [A  A  A][B  B][D]
-  3 | [C  C  C][B  B][D]
-  4 | [C  C  C][B  B][D]
-  5 | [B  B]
-    |
-    |
-    t
-    i
-    m
-    e
-    |
-    v
-*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 int get_int() {
   char buffer[20];
@@ -44,11 +17,8 @@ int get_int() {
 
 typedef struct Task {
   int index;
-  // char label;
-  int delay;
   int cpu_burst;
   int processors_required;
-  int priority;
 } Task;
 
 int compare_tasks_cpu_bursts(const void* a, const void* b) {
@@ -56,44 +26,8 @@ int compare_tasks_cpu_bursts(const void* a, const void* b) {
     Task *right_task = *(Task**)b;
 
     if (left_task->cpu_burst < right_task->cpu_burst)
-        return 1;
+        return -1;
     else if (left_task->cpu_burst > right_task->cpu_burst)
-        return -1;
-    else
-        return 0;
-}
-
-int compare_tasks_delays(const void* a, const void* b) {
-    Task *left_task = *(Task**)a;
-    Task *right_task = *(Task**)b;
-
-    if (left_task->delay < right_task->delay)
-        return -1;
-    else if (left_task->delay > right_task->delay)
-        return 1;
-    else
-        return 0;
-}
-
-int compare_tasks_processors_required(const void* a, const void* b) {
-    Task *left_task = *(Task**)a;
-    Task *right_task = *(Task**)b;
-
-    if (left_task->processors_required < right_task->processors_required)
-        return -1;
-    else if (left_task->processors_required > right_task->processors_required)
-        return 1;
-    else
-        return 0;
-}
-
-int compare_tasks_priorities(const void* a, const void* b) {
-    Task *left_task = *(Task**)a;
-    Task *right_task = *(Task**)b;
-
-    if (left_task->priority < right_task->priority)
-        return -1;
-    else if (left_task->priority > right_task->priority)
         return 1;
     else
         return 0;
@@ -118,18 +52,10 @@ int main() {
   }
 
   printf("Every task must has the following atributes:\n");
-  printf("- delay\n- CPU-burst\n- processors\n- priority\n");
+  printf("\n- CPU-burst\n- processors\n");
 
   for (int task_index = 0; task_index < total_tasks; ++task_index) {
     tasks[task_index].index = task_index;
-
-    printf("Enter the %d task delay: ", task_index);
-    tasks[task_index].delay = get_int();
-    if (tasks[task_index].delay < 0) {
-      // Exception handling
-      printf("An error occurred!\n");
-      return (EXIT_FAILURE);
-    }
 
     printf("Enter the %d task CPU-burst: ", task_index);
     tasks[task_index].cpu_burst = get_int();
@@ -146,43 +72,33 @@ int main() {
       printf("An error occurred!\n");
       return (EXIT_FAILURE);
     }
-
-    printf("Enter the %d task priority (1..): ", task_index);
-    tasks[task_index].priority = get_int();
-    if (tasks[task_index].priority <= 0) {
-      // Exception handling
-      printf("An error occurred!\n");
-      return (EXIT_FAILURE);
-    }
   }
-
-  /*
-  - Preparing data (sorting)
-    - Sort by CPU-burst (>)
-    - Sort by delay (<)
-    - Sort by processors_required (<)
-    - Sort by priority (<)
-  */
 
   Task** p_tasks = (Task **)malloc(total_tasks * sizeof(Task *));
   for (int task_index = 0; task_index < total_tasks; ++task_index) {
     p_tasks[task_index] = &tasks[task_index];
   }
 
-  qsort(p_tasks, total_tasks, sizeof(Task*), compare_tasks_cpu_bursts);
-  qsort(p_tasks, total_tasks, sizeof(Task*), compare_tasks_delays);
-  qsort(p_tasks, total_tasks, sizeof(Task*), compare_tasks_processors_required);
-  qsort(p_tasks, total_tasks, sizeof(Task*), compare_tasks_priorities);
+  // Time to choose an algorithm!
+
+  printf("Choose one of the algorithms ('fcfs' (default) or 'sjf'): ");
+  char algorithm[20];
+  scanf("%s", algorithm);
+
+  if (strcmp(algorithm, "sjf") == 0) {
+    printf("The 'sjf' has been launched...\n");
+    qsort(p_tasks, total_tasks, sizeof(Task*), compare_tasks_cpu_bursts);
+  } else {
+    printf("The 'fcfs' has been launched...\n");
+  }
 
   // Printing a prepeared data table
-  printf("[label]\t[delay]\t[CPU-b]\t[procs]\t[prior]\n");
+  printf("[label]\t[CPU-b]\t[procs]\n");
   for (int task_index = 0; task_index < total_tasks; ++task_index) {
     Task current_task = *(p_tasks[task_index]);
     printf("%c\t%d\t%d\t%d\t%d\n", current_task.index + (int)'A',
-                                   current_task.delay,
                                    current_task.cpu_burst,
-                                   current_task.processors_required,
-                                   current_task.priority);
+                                   current_task.processors_required);
   }
 
   int *cpu_bursts = malloc(total_tasks * sizeof(int));
@@ -214,7 +130,6 @@ int main() {
       // Warning: a miserable thing to use 'task_index' in squared brackets
       if (!tasks_blacklist[current_task.index] &&
           cpu_bursts[current_task.index] > 0 &&
-          current_task.delay <= t &&
           processors_limit - snap_p >= current_task.processors_required) {
         // Filling with snapshot with 'indexes'
         for (int i = 0; i < current_task.processors_required; ++i) {
@@ -259,5 +174,4 @@ int main() {
     }
   }
 
-  return (EXIT_SUCCESS);
 }
