@@ -34,15 +34,6 @@ int compare_tasks_cpu_bursts(const void* a, const void* b) {
 }
 
 int main() {
-  printf("How many tasks do you want to lauch? ");
-  int total_tasks = get_int();
-  if (total_tasks <= 0) {
-    // Exception handling
-    printf("An error occurred!\n");
-    return (EXIT_FAILURE);
-  }
-  Task* tasks = malloc(total_tasks * sizeof *tasks);
-
   printf("How many processors are available? ");
   int processors_limit = get_int();
   if (processors_limit <= 0) {
@@ -51,9 +42,18 @@ int main() {
     return (EXIT_FAILURE);
   }
 
+  printf("How many tasks do you want to lauch? ");
+  int total_tasks = get_int();
+  if (total_tasks <= 0) {
+    // Exception handling
+    printf("An error occurred!\n");
+    return (EXIT_FAILURE);
+  }
+
   printf("Every task must has the following atributes:\n");
   printf("\n- CPU-burst\n- processors\n");
 
+  Task* tasks = malloc(total_tasks * sizeof *tasks);
   for (int task_index = 0; task_index < total_tasks; ++task_index) {
     tasks[task_index].index = task_index;
 
