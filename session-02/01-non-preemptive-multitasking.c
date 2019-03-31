@@ -19,6 +19,8 @@ typedef struct Task {
   int index;
   int cpu_burst;
   int processors_required;
+  bool was_launched;
+  int position;
 } Task;
 
 int compare_tasks_cpu_bursts(const void* a, const void* b) {
@@ -102,10 +104,17 @@ int main() {
                                    current_task.processors_required);
   }
 
-  int *cpu_bursts = malloc(total_tasks * sizeof(int));
+  int cpu_bursts[total_tasks];
   for (int task_index = 0; task_index < total_tasks; ++task_index) {
     Task current_task = *(p_tasks[task_index]);
     cpu_bursts[current_task.index] = current_task.cpu_burst;
+  }
+
+  // Non-preemptive feature
+  // Force add to the snap already launched tasks
+  for (int task_index = 0; task_index < total_tasks; ++task_index) {
+    tasks[task_index].was_launched = false;
+    tasks[task_index].position = -1;
   }
 
   int average_working_time = 0;
@@ -114,16 +123,28 @@ int main() {
   // t - time on the timeline axis
   for (int t = 0; ; ++t) {
     // Snapshot - a single row in a timeline
-    int* snap = malloc(processors_limit * sizeof(int));
+    int snap[processors_limit];
     for (int i = 0; i < processors_limit; ++i) {
       snap[i] = -1;
     }
     int snap_p = 0;
 
     // A task can be launched only once in a row
-    bool* tasks_blacklist = malloc(total_tasks * sizeof(int));
+    bool tasks_blacklist[total_tasks];
     for (int i = 0; i < processors_limit; ++i) {
       tasks_blacklist[i] = false;
+    }
+
+    for (int task_index = 0; task_index < total_tasks; ++task_index) {
+      Task current_task = *(p_tasks[task_index]);
+      if (current_task.was_launched &&
+          cpu_bursts[current_task.index] > 0) {
+        for (int i = 0; i < current_task.processors_required; ++i) {
+          snap[i + current_task.position] = current_task.index;
+        }
+        tasks_blacklist[current_task.index] = true;
+        cpu_bursts[current_task.index]--;
+      }
     }
 
     for (int task_index = 0; task_index < total_tasks; ++task_index) {
@@ -132,13 +153,27 @@ int main() {
       if (!tasks_blacklist[current_task.index] &&
           cpu_bursts[current_task.index] > 0 &&
           processors_limit - snap_p >= current_task.processors_required) {
-        // Filling with snapshot with 'indexes'
+        bool is_blocked = false;
         for (int i = 0; i < current_task.processors_required; ++i) {
-          snap[snap_p] = current_task.index;
+          if (snap[snap_p+i] != -1) {
+            is_blocked = true;
+          }
+        }
+        // Filling with snapshot with 'indexes'
+        if (!is_blocked) {
+          tasks[current_task.index].position = snap_p;
+        }
+        for (int i = 0; i < current_task.processors_required; ++i) {
+          if (!is_blocked) {
+            snap[snap_p] = current_task.index;
+          }
           snap_p++;
         }
-        tasks_blacklist[current_task.index] = true;
-        cpu_bursts[current_task.index]--;
+        if (!is_blocked) {
+          tasks[current_task.index].was_launched = true;
+          tasks_blacklist[current_task.index] = true;
+          cpu_bursts[current_task.index]--;
+        }
       }
     }
 

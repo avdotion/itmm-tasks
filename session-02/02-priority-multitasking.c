@@ -1,4 +1,4 @@
-// TASK: Priority Planning Scheduler
+// TASK: Priority Multitasking
 // STATUS: NOT PASSED YET
 // MARK: ON HOLD
 
@@ -123,7 +123,7 @@ int main() {
   for (int task_index = 0; task_index < total_tasks; ++task_index) {
     tasks[task_index].index = task_index;
 
-    printf("Enter the %d task delay: ", task_index);
+    printf("Enter the %d task delay: ", task_index + 1);
     tasks[task_index].delay = get_int();
     if (tasks[task_index].delay < 0) {
       // Exception handling
@@ -131,7 +131,7 @@ int main() {
       return (EXIT_FAILURE);
     }
 
-    printf("Enter the %d task CPU-burst: ", task_index);
+    printf("Enter the %d task CPU-burst: ", task_index + 1);
     tasks[task_index].cpu_burst = get_int();
     if (tasks[task_index].cpu_burst <= 0) {
       // Exception handling
@@ -139,7 +139,7 @@ int main() {
       return (EXIT_FAILURE);
     }
 
-    printf("Enter the %d task processors required: ", task_index);
+    printf("Enter the %d task processors required: ", task_index + 1);
     tasks[task_index].processors_required = get_int();
     if (tasks[task_index].processors_required <= 0) {
       // Exception handling
@@ -147,7 +147,7 @@ int main() {
       return (EXIT_FAILURE);
     }
 
-    printf("Enter the %d task priority (1..): ", task_index);
+    printf("Enter the %d task priority (1..): ", task_index + 1);
     tasks[task_index].priority = get_int();
     if (tasks[task_index].priority <= 0) {
       // Exception handling
