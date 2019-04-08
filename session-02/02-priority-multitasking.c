@@ -1,6 +1,6 @@
 // TASK: Priority Multitasking
-// STATUS: NOT PASSED YET
-// MARK: ON HOLD
+// STATUS: DONE
+// MARK: PASSED
 
 /*
   Usage example:
