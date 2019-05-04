@@ -1,6 +1,7 @@
-// TASK: Calculation of the Temporal Characteristics of the network model
-// STATUS: ON HOLD
-// MARK: ON HOLD
+// TASK: PERT
+// STATUS: DONE
+// MARK: PASSED
+// COMMENT: The script shows only one critical path (it's easy to display all).
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -101,7 +102,8 @@ typedef struct Vertex {
 } Vertex;
 
 typedef struct Edge {
-  Vertex* destination;
+  Vertex* from;
+  Vertex* to;
   int weight;
 } Edge;
 
@@ -113,33 +115,35 @@ Vertex* newVertex(int label) {
   return vertex;
 }
 
-Edge* newEdge(Vertex* destination, int weight) {
+Edge* newEdge(Vertex* from, Vertex* to, int weight) {
   Edge *edge = (Edge*)malloc(sizeof(Edge));
-  edge->destination = destination;
+  edge->from = from;
+  edge->to = to;
   edge->weight = weight;
   return edge;
 }
 
 void linkVertices(Vertex* rise, Vertex* fall, int weight) {
-  Edge* to_arrow = newEdge(fall, weight);
-  appendLinkedList(to_arrow, rise->successors, 0);
-  Edge* from_arrow = newEdge(rise, weight);
-  appendLinkedList(from_arrow, fall->predecessors, 0);
+  Edge* arrow = newEdge(rise, fall, weight);
+  appendLinkedList(arrow, rise->successors, 0);
+  appendLinkedList(arrow, fall->predecessors, 0);
 }
 
 char* toStringEdge(void* ptr) {
   static char buffer[16];
   Edge* edge = (Edge*)ptr;
-  sprintf(buffer, "<%d, %d>", edge->destination->label, edge->weight);
+  sprintf(buffer, "<%d, %d, %d>", edge->from->label, edge->to->label, edge->weight);
   return buffer;
 }
 
 void printVertex(Vertex* vertex) {
   printf("vertex {\n");
   printf("  label: \"%d\",\n", vertex->label);
-  printf("  edges: %p,\n", vertex);
-  printf("  edges: ");
+  printf("  pointer: %p,\n", vertex);
+  printf("  successors: ");
   printLinkedList(vertex->successors, &toStringEdge);
+  printf("  predecessors: ");
+  printLinkedList(vertex->predecessors, &toStringEdge);
   printf("}\n");
 }
 
@@ -189,9 +193,12 @@ void printArray(int* array, size_t size) {
 }
 
 int main() {
+  printf("How many edges do you have? ");
   int edges_count = get_int();
+  printf("How many vertices do you have? ");
   int vertices_count = get_int();
   Graph* network = newGraph(vertices_count);
+  printf("The graph has been implemented; type graph-data in such format (from to weight):\n");
   for (int i = 0; i < edges_count; ++i) {
     int vertex_index = get_int() - 1;
     int destination_index = get_int() - 1;
@@ -204,15 +211,20 @@ int main() {
     );
   }
 
+  for (int i = 0; i < vertices_count; ++i) {
+      printVertex(network->vertices[i]);
+  }
+
   // Critical Path
+  // https://en.wikipedia.org/wiki/Program_evaluation_and_review_technique
   LinkedList* critical_path_left = newLinkedList();
   LinkedList* critical_path_right = newLinkedList();
 
-  // Early Stages
+  // Early Time (ES)
   // E(y) = max(E(x) + t(x, y))
   //       (x,y)
-  int early_stages[vertices_count];
-  early_stages[0] = 0;
+  int early_times[vertices_count];
+  early_times[0] = 0;
 
   for (int vertex_index = 1; vertex_index < vertices_count; ++vertex_index) {
     int result = 0;
@@ -220,41 +232,56 @@ int main() {
     LinkedList* predecessors = get_predecessors(network, vertex_index);
     for (int i = 0; i < predecessors->size; ++i) {
       Edge* predecessor = (Edge*)getByIndexLinkedList(predecessors, i);
-      int predecessor_index = predecessor->destination->label - 1;
-      if (early_stages[predecessor_index] + predecessor->weight > result) {
-        result = early_stages[predecessor_index] + predecessor->weight;
+      int predecessor_index = predecessor->from->label - 1;
+      if (early_times[predecessor_index] + predecessor->weight > result) {
+        result = early_times[predecessor_index] + predecessor->weight;
         critical_path_left_item = predecessor;
       }
     }
     appendLinkedList(critical_path_left_item, critical_path_left, critical_path_left->size);
-    early_stages[vertex_index] = result;
+    early_times[vertex_index] = result;
   }
-  printf("E[%d] = %d\n", vertices_count, early_stages[vertices_count - 1]);
-  // Late Stages
+  printf("E[%d] = %d\n", vertices_count, early_times[vertices_count - 1]);
+  // Late Time
   // L(y) = min(L(y) - t(x, y))
   //       (x,y)
-  int late_stages[vertices_count];
-  late_stages[vertices_count - 1] = early_stages[vertices_count - 1];
+  int late_times[vertices_count];
+  late_times[vertices_count - 1] = early_times[vertices_count - 1];
 
   for (int vertex_index = vertices_count - 2; vertex_index >= 0; --vertex_index) {
-    int result = early_stages[vertices_count - 1];
+    int result = early_times[vertices_count - 1];
     Edge* critical_path_right_item = 0;
     LinkedList* successors = get_successors(network, vertex_index);
     for (int i = 0; i < successors->size; ++i) {
       Edge* successor = (Edge*)getByIndexLinkedList(successors, i);
-      int successor_index = successor->destination->label - 1;
-      if (late_stages[successor_index] - successor->weight < result) {
-        result = late_stages[successor_index] - successor->weight;
+      int successor_index = successor->to->label - 1;
+      if (late_times[successor_index] - successor->weight < result) {
+        result = late_times[successor_index] - successor->weight;
         critical_path_right_item = successor;
       }
     }
     appendLinkedList(critical_path_right_item, critical_path_right, critical_path_right->size);
-    late_stages[vertex_index] = result;
+    late_times[vertex_index] = result;
   }
-  // printArray(late_stages, vertices_count);
-  printf("L[%d] = %d\n", 0, late_stages[0]);
+
+  printf("L[%d] = %d\n", 0, late_times[0]);
   printf("Possible Critical Path:\n");
-  printLinkedList(critical_path_left, &toStringEdge);
-  printLinkedList(critical_path_right, &toStringEdge);
+
+  // Finding critical paths
+  LinkedList* critical_path = newLinkedList();
+  Edge* current_edge = (Edge*)getByIndexLinkedList(critical_path_left, critical_path_left->size - 1);
+  do {
+    appendLinkedList(current_edge, critical_path, 0);
+    for (int i = 0; i < critical_path_left->size; ++i) {
+      Edge* temp_edge = (Edge*)getByIndexLinkedList(critical_path_left, i);
+      if (temp_edge->to == current_edge->from) {
+          current_edge = temp_edge;
+          break;
+      }
+    }
+  } while (current_edge->from->label != 1);
+
+  appendLinkedList(current_edge, critical_path, 0);
+  printLinkedList(critical_path, &toStringEdge);
   return 0;
 }

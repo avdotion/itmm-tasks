@@ -7,6 +7,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+char INACTIVE_MARKER = '-';
+char ACTIVE_MARKER = '*';
+
 int get_int() {
   char buffer[20];
   char *ptr;
@@ -18,25 +21,103 @@ int get_int() {
 typedef struct Task {
   int index;
   int cpu_burst;
-  int processors_required;
 } Task;
 
-int compare_tasks_cpu_bursts(const void* a, const void* b) {
-    Task *left_task = *(Task**)a;
-    Task *right_task = *(Task**)b;
+typedef struct LinkedListNode {
+  void* data;
+  struct LinkedListNode* next;
+} LinkedListNode;
 
-    if (left_task->cpu_burst < right_task->cpu_burst)
-        return -1;
-    else if (left_task->cpu_burst > right_task->cpu_burst)
-        return 1;
-    else
-        return 0;
+LinkedListNode* newLinkedListNode(void* data) {
+  LinkedListNode *linked_list_node = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+  linked_list_node->data = data;
+  linked_list_node->next = NULL;
+  return linked_list_node;
+}
+
+typedef struct LinkedList {
+  int size;
+  LinkedListNode* chain;
+} LinkedList;
+
+LinkedList* newLinkedList() {
+  LinkedList *linked_list = (LinkedList*)malloc(sizeof(LinkedList));
+  linked_list->chain = newLinkedListNode("_HEAD");
+  linked_list->chain->next = newLinkedListNode("_TAIL");
+  linked_list->size = 0;
+  return linked_list;
+}
+
+void* getByIndexLinkedList(LinkedList* linked_list, int index) {
+  if (index <= linked_list->size) {
+    LinkedListNode* current = linked_list->chain->next;
+    for (int i = 0; i < index; ++i) {
+      current = current->next;
+    }
+    return current->data;
+  } else {
+    return NULL;
+  }
+}
+
+bool appendLinkedList(void* data, LinkedList* linked_list, int index) {
+  if (index > linked_list->size) {
+    return false;
+  } else {
+    LinkedListNode* current = linked_list->chain;
+    for (int i = 0; i < index; ++i) {
+      current = current->next;
+    }
+    LinkedListNode* node = newLinkedListNode(data);
+    node->next = current->next;
+    current->next = node;
+  }
+  linked_list->size++;
+  return true;
+}
+
+bool removeLinkedList(LinkedList* linked_list, int index) {
+  if (index >= linked_list->size) {
+    return false;
+  } else {
+    LinkedListNode* current = linked_list->chain;
+    for (int i = 0; i <= index; ++i) {
+      current = current->next;
+    }
+    current->data = current->next->data;
+    current->next = current->next->next;
+  }
+  linked_list->size--;
+  return true;
+}
+
+void printLinkedList(LinkedList* linked_list, char* (*handler)(void*)) {
+
+  LinkedListNode* current = linked_list->chain;
+  for (int i = 0; i < linked_list->size; ++i) {
+    current = current->next;
+    char* t = (*handler)(current->data);
+    printf("%s", t);
+  }
+  printf("\n");
+}
+
+char* toStringDefault(void* ptr) {
+  static char buffer[10];
+  sprintf(buffer, "%s", ptr);
+  return buffer;
+}
+
+char* toCharDefault(void* ptr) {
+  static char buffer[10];
+  sprintf(buffer, "%c", *(char*)ptr);
+  return buffer;
 }
 
 int main() {
-  printf("How many processors are available? ");
-  int processors_limit = get_int();
-  if (processors_limit <= 0) {
+  printf("What is the quant? ");
+  int time_quant = get_int();
+  if (time_quant <= 0) {
     // Exception handling
     printf("An error occurred!\n");
     return (EXIT_FAILURE);
@@ -51,7 +132,9 @@ int main() {
   }
 
   printf("Every task must has the following atributes:\n");
-  printf("\n- CPU-burst\n- processors\n");
+  printf("\t- CPU-burst\n");
+
+  LinkedList* queue = newLinkedList();
 
   Task* tasks = malloc(total_tasks * sizeof *tasks);
   for (int task_index = 0; task_index < total_tasks; ++task_index) {
@@ -64,115 +147,76 @@ int main() {
       printf("An error occurred!\n");
       return (EXIT_FAILURE);
     }
-
-    printf("Enter the %d task processors required: ", task_index + 1);
-    tasks[task_index].processors_required = get_int();
-    if (!(0 <= tasks[task_index].processors_required &&
-               tasks[task_index].processors_required <= processors_limit)) {
-      // Exception handling
-      printf("An error occurred!\n");
-      return (EXIT_FAILURE);
-    }
-  }
-
-  Task** p_tasks = (Task **)malloc(total_tasks * sizeof(Task *));
-  for (int task_index = 0; task_index < total_tasks; ++task_index) {
-    p_tasks[task_index] = &tasks[task_index];
-  }
-
-  // Time to choose an algorithm!
-
-  printf("Choose one of the algorithms ('fcfs' (default) or 'sjf'): ");
-  char algorithm[20];
-  scanf("%s", algorithm);
-
-  if (strcmp(algorithm, "sjf") == 0) {
-    printf("The 'sjf' has been launched...\n");
-    qsort(p_tasks, total_tasks, sizeof(Task*), compare_tasks_cpu_bursts);
-  } else {
-    printf("The 'fcfs' has been launched...\n");
   }
 
   // Printing a prepeared data table
-  printf("[label]\t[CPU-b]\t[procs]\n");
+  printf("[label]\t[CPU-b]\n");
   for (int task_index = 0; task_index < total_tasks; ++task_index) {
-    Task current_task = *(p_tasks[task_index]);
-    printf("%c\t%d\t%d\t%d\t%d\n", current_task.index + (int)'A',
-                                   current_task.cpu_burst,
-                                   current_task.processors_required);
+    Task current_task = tasks[task_index];
+    printf("%c\t%d\n", current_task.index + (int)'A',
+                                   current_task.cpu_burst);
   }
 
-  int *cpu_bursts = malloc(total_tasks * sizeof(int));
   for (int task_index = 0; task_index < total_tasks; ++task_index) {
-    Task current_task = *(p_tasks[task_index]);
-    cpu_bursts[current_task.index] = current_task.cpu_burst;
+    appendLinkedList(&tasks[task_index], queue, queue->size);
   }
 
-  int average_working_time = 0;
-  int average_holing_time = 0;
-  printf("    +---------------------processors-->\n");
-  // t - time on the timeline axis
-  for (int t = 0; ; ++t) {
-    // Snapshot - a single row in a timeline
-    int* snap = malloc(processors_limit * sizeof(int));
-    for (int i = 0; i < processors_limit; ++i) {
-      snap[i] = -1;
-    }
-    int snap_p = 0;
 
-    // A task can be launched only once in a row
-    bool* tasks_blacklist = malloc(total_tasks * sizeof(int));
-    for (int i = 0; i < processors_limit; ++i) {
-      tasks_blacklist[i] = false;
-    }
+  // Time to choose an algorithm!
+  //
+  // printf("Choose one of the algorithms ('fcfs' (default) or 'sjf'): ");
+  // char algorithm[20];
+  // scanf("%s", algorithm);
+  //
+  // if (strcmp(algorithm, "sjf") == 0) {
+  //   printf("The 'sjf' has been launched...\n");
+  //   qsort(p_tasks, total_tasks, sizeof(Task*), compare_tasks_cpu_bursts);
+  // } else {
+  //   printf("The 'fcfs' has been launched...\n");
+  // }
 
-    for (int task_index = 0; task_index < total_tasks; ++task_index) {
-      Task current_task = *(p_tasks[task_index]);
-      // Warning: a miserable thing to use 'task_index' in squared brackets
-      if (!tasks_blacklist[current_task.index] &&
-          cpu_bursts[current_task.index] > 0 &&
-          processors_limit - snap_p >= current_task.processors_required) {
-        // Filling with snapshot with 'indexes'
-        for (int i = 0; i < current_task.processors_required; ++i) {
-          snap[snap_p] = current_task.index;
-          snap_p++;
-        }
-        tasks_blacklist[current_task.index] = true;
-        cpu_bursts[current_task.index]--;
+  int *cpu_bursts_left = malloc(total_tasks * sizeof(int));
+  for (int task_index = 0; task_index < total_tasks; ++task_index) {
+    Task current_task = tasks[task_index];
+    cpu_bursts_left[current_task.index] = current_task.cpu_burst;
+  }
+
+  LinkedList* graph[total_tasks];
+  for (int i = 0; i < total_tasks; ++i) {
+    graph[i] = newLinkedList();
+  }
+
+  while (queue->size > 0) {
+    bool task_removed = false;
+    Task* current_task = (Task *)getByIndexLinkedList(queue, 0);
+    for (int i = 0; i < time_quant; ++i) {
+      // Fill with __empty spaces__
+      for (int k = 0; k < total_tasks; ++k) {
+        appendLinkedList(&INACTIVE_MARKER, graph[k], graph[k]->size);
+      }
+      removeLinkedList(graph[current_task->index], graph[current_task->index]->size - 1);
+      appendLinkedList(&ACTIVE_MARKER, graph[current_task->index], graph[current_task->index]->size);
+
+      cpu_bursts_left[current_task->index]--;
+      if (cpu_bursts_left[current_task->index] <= 0) {
+        task_removed = true;
+        removeLinkedList(queue, 0);
+        break;
       }
     }
-
-    printf(" %2d | ", t);
-    for (int processor_index = 0; processor_index < processors_limit; ++processor_index) {
-      printf("[");
-      if (snap[processor_index] == -1) {
-        printf(" ");
-        average_holing_time++;
-      } else {
-        printf("%c", snap[processor_index] + (int)'A');
-        average_working_time++;
-      }
-      printf("]");
-    }
-    printf("\n");
-
-    bool all_tasks_are_done = true;
-    for (int task_index = 0; task_index < total_tasks; ++task_index) {
-      Task current_task = *(p_tasks[task_index]);
-      if (cpu_bursts[current_task.index] != 0) {
-        all_tasks_are_done = false;
+    if (!task_removed) {
+      removeLinkedList(queue, 0);
+      if (cpu_bursts_left[current_task->index] > 0) {
+        appendLinkedList(current_task, queue, queue->size);
       }
     }
-    if (all_tasks_are_done) {
-      printf("    |\n    |\n    t\n    i\n    m\n    e\n    |\n    v\n\n");
-      printf("Time to do all the tasks is %d units.\n", t);
-      printf("Average working time is %d (%.1lf%) units and average holding time is %d (%.1lf%) units.\n",
-             average_working_time,
-             (double)100 * average_working_time / (t+1) / processors_limit,
-             average_holing_time,
-             (double)100 * average_holing_time / (t+1) / processors_limit);
-      break;
-    }
+  }
+
+  printf("Graph:\n");
+
+  for (int i = 0; i < total_tasks; ++i) {
+    printf("%c: ", (int)'A' + i);
+    printLinkedList(graph[i], &toCharDefault);
   }
 
 }
