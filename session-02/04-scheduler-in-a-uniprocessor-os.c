@@ -1,6 +1,6 @@
 // TASK: Scheduler in a uniprocessor OS
-// STATUS: PASSED
-// MARK: DONE
+// STATUS: DONE
+// MARK: PASSED
 
 #include <stdio.h>
 #include <stdlib.h>

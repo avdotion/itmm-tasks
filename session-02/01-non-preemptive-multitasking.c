@@ -1,6 +1,6 @@
-// TASK: Preemptive multitasking
-// STATUS: NOT PASSED YET
-// MARK: ON HOLD
+// TASK: Non-Preemptive multitasking
+// STATUS: DONE
+// MARK: PASSED
 
 #include <stdio.h>
 #include <stdlib.h>

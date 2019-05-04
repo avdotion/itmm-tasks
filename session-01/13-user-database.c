@@ -1,6 +1,7 @@
 // TASK: User database (hash table)
-// STATUS: Might be a broken, but it is totally passed
+// STATUS: DONE
 // MARK: PASSED
+// COMMENT: It may be broken
 
 #include <stdlib.h>
 #include <stdio.h>

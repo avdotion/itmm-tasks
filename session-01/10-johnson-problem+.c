@@ -1,6 +1,6 @@
 // TASK: Johnson problem (file I/O)
 // STATUS: DONE
-// MARK: PENDING
+// MARK: PASSED
 
 /*
 Test Example:
