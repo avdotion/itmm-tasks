@@ -1,6 +1,6 @@
 // TASK: Preemptive multitasking
-// STATUS: NOT PASSED YET
-// MARK: ON HOLD
+// STATUS: DONE
+// MARK: PASSED
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -186,12 +186,22 @@ int main() {
     graph[i] = newLinkedList();
   }
 
+  int average_holding_time = 0;
+
+  bool is_task_done[total_tasks];
+  for (int i = 0; i < total_tasks; ++i) {
+    is_task_done[i] = false;
+  }
+
   while (queue->size > 0) {
     bool task_removed = false;
     Task* current_task = (Task *)getByIndexLinkedList(queue, 0);
     for (int i = 0; i < time_quant; ++i) {
       // Fill with __empty spaces__
       for (int k = 0; k < total_tasks; ++k) {
+        if (!is_task_done[k]) {
+          average_holding_time++;
+        }
         appendLinkedList(&INACTIVE_MARKER, graph[k], graph[k]->size);
       }
       removeLinkedList(graph[current_task->index], graph[current_task->index]->size - 1);
@@ -200,6 +210,7 @@ int main() {
       cpu_bursts_left[current_task->index]--;
       if (cpu_bursts_left[current_task->index] <= 0) {
         task_removed = true;
+        is_task_done[current_task->index] = true;
         removeLinkedList(queue, 0);
         break;
       }
@@ -218,5 +229,10 @@ int main() {
     printf("%c: ", (int)'A' + i);
     printLinkedList(graph[i], &toCharDefault);
   }
+
+  printf("Average working time: %d; average holding time: %d\n",
+    graph[0]->size,
+    average_holding_time
+  );
 
 }
